@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from django.conf import settings
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chart',
     'map',
+    'state',
+    'django_admin_inline_paginator',
+    'django_crontab',
+]
+
+CRONJOBS = [
+    ('0 0 * * *', 'state.cron.daily_stat_update', '>>' + os.path.join(settings.BASE_DIR, "log.txt"))
 ]
 
 MIDDLEWARE = [

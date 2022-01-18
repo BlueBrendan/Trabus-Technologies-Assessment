@@ -1,1 +1,8 @@
 <h1>Chart</h1>
+<select>
+    {% for state in states %}
+        <option value="{{state.title}}">
+            {{state.title}}
+        </option>
+    {% endfor %}
+</select>

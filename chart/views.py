@@ -1,5 +1,10 @@
 from django.shortcuts import render
+from state.models import State
 
 # Create your views here.
 def chart_view(request):
-    return render(request, 'chart/chart.html')
+    states = State.objects.all()
+    context = {
+        "states": states,
+    }
+    return render(request, 'chart/chart.html', context)
