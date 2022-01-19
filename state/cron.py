@@ -1,11 +1,10 @@
 import pandas as pd
 import datetime
+from pytz import timezone
 from state.models import State, Statistic
 
 def daily_stat_update():
-    today = datetime.date.today()
-    today = today.strftime("%Y-%m-%d")
-    today = "2022-01-17"
+    today = datetime.datetime.today().astimezone(timezone('US/Pacific')).strftime("%Y-%m-%d")
     print(today)
     # Read data from GitHub csv file and store in dataframe
     data = pd.read_csv('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')
@@ -18,6 +17,18 @@ def daily_stat_update():
     # Remove all rows from data that are not from today
     data = [row for row in data if row not in remove]
     print(data)
+    print(len(data))
+
+    # Calculate death rate for each state and save in the database
+    states = State.objects.all()
+    for state in states:
+        try:
+            stat = Statistic.objects.get(date=datetime.datetime.today().astimezone(timezone('US/Pacific')), state=state)
+            death_rate = round(stat.deaths/stat.cases, 3)
+            state.death_rate = death_rate
+            state.save()
+        except:
+            pass
     # # Create statistic object for each row in data (data from today)
     # for row in data:
     #     date = datetime.datetime(int(row[0][:4]), int(row[0][5:7]), int(row[0][8:10]))

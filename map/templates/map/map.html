@@ -1,1 +1,29 @@
-<h1>Map</h1>
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Map</h1>
+    <a href="/chart/">View chart</a>
+    <br><br>
+    <div id="map"></div>
+{% endblock %}
+
+<script>
+    {% block scripts %}
+        // D3 Projection
+        var projection = d3.geoAlbersUsa()
+        .translate([width / 2, height / 2]) // translate to center of screen
+        .scale([1000]); // scale things down so see entire US
+
+        // Define path generator
+        var path = d3.geoPath() // path generator that will convert GeoJSON to SVG paths
+        .projection(projection); // tell path generator to use albersUsa projection
+
+        //Create SVG element and append map to the SVG
+        var svg = d3.select("body")
+        .append("svg")
+        .attr("width", 1000)
+        .attr("height", 600);
+
+
+    {% endblock %}
+</script>
