@@ -5,7 +5,6 @@ from state.models import State, Statistic
 
 def daily_stat_update():
     today = datetime.datetime.today().astimezone(timezone('US/Pacific')).strftime("%Y-%m-%d")
-    print(today)
     # Read data from GitHub csv file and store in dataframe
     data = pd.read_csv('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')
     # Take last 60 rows and store as a list
@@ -16,7 +15,6 @@ def daily_stat_update():
             remove.append(row)
     # Remove all rows from data that are not from today
     data = [row for row in data if row not in remove]
-    print(data)
     
     # Create statistic object for each row in data (data from today)
     for row in data:
@@ -30,10 +28,7 @@ def daily_stat_update():
     # Recalculate the death rate for each state and save in the database
     states = State.objects.all()
     for state in states:
-        try:
-            stat = Statistic.objects.get(date=datetime.datetime.today().astimezone(timezone('US/Pacific')), state=state)
-            death_rate = round(stat.deaths/stat.cases, 3)
-            state.death_rate = death_rate
-            state.save()
-        except:
-            pass
+        stat = Statistic.objects.get(date=datetime.datetime.today().astimezone(timezone('US/Pacific')), state=state)
+        death_rate = round(stat.deaths/stat.cases, 3)
+        state.death_rate = death_rate
+        state.save()

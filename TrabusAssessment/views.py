@@ -29,5 +29,5 @@ def load_csv(request):
             stat = Statistic.objects.get(date=date, state=state)
             print(f"{stat} exists")
         except Statistic.DoesNotExist:
-            Statistic.objects.create(date=date, state=state, cases=row[3], deaths=row[4]) 
+            Statistic.objects.create(date=date, state=state, cases=row[3], deaths=row[4])
     return render(request, "load_csv.html")
