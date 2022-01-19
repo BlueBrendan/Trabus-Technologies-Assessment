@@ -3,7 +3,7 @@
 {% block content %}
     {{ state_data|json_script:"state_data" }}
     <h1>Map</h1>
-    <a href="/chart/">View chart</a>
+    <button onclick="location.href='/chart/'" type="button">View chart</button>
     <br><br>
     <div id='tooltip' style="position: absolute; background: white;">
     </div>
