@@ -10,13 +10,17 @@
             </option>
         {% endfor %}
     </select>
+    <br>
+    <div id="chartContainer" style="max-width: 1300px;">
+        <canvas id="myChart"></canvas>
+    </div>
 {% endblock %}
 
 <script>
     {% block scripts %}
     function changeState(){
+        var chart;
         let state = document.getElementById("stateSelection").value;
-        console.log(state);
 
         $.ajax({
             url : "/state/load-state-data/" + state,
@@ -24,7 +28,36 @@
     
             // handle a successful response
             success : function(json) {
-              console.log(json);
+                var dates = [];
+                var cases = [];
+                var deaths = [];
+                for (let i=0; i<json.data.length; i++){
+                    dates.push(json.data[i][0]);
+                    cases.push(json.data[i][1]);
+                    deaths.push(json.data[i][2]);
+
+                }
+
+                // Delete chart
+                $('#myChart').remove();
+                $('#chartContainer').append('<canvas id="myChart"><canvas>');
+                var ctx = document.getElementById("myChart").getContext('2d');
+                var config = {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Total Cases',
+                        data: cases,
+                        backgroundColor: 'blue'
+                        },{
+                        label: 'Total Deaths',
+                        data: deaths,
+                        backgroundColor: 'red'
+                        }]
+                    }
+                };
+                chart = new Chart(ctx, config);
             },
     
             // handle a non-successful response
