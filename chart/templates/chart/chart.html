@@ -12,6 +12,7 @@
             </option>
         {% endfor %}
     </select>
+    <span id="loadingIndicator"></span>
     <br>
     <div id="chartContainer" style="max-width: 1300px;">
         <canvas id="myChart"></canvas>
@@ -23,7 +24,7 @@
     function changeState(){
         var chart;
         let state = document.getElementById("stateSelection").value;
-
+        document.getElementById("loadingIndicator").innerHTML = "Loading..."
         $.ajax({
             url : "/state/load-state-data/" + state,
             type : "GET",
@@ -48,6 +49,9 @@
                 // Delete chart
                 $('#myChart').remove();
                 $('#chartContainer').append('<canvas id="myChart"><canvas>');
+                
+                document.getElementById("loadingIndicator").innerHTML = "";
+                
                 var ctx = document.getElementById("myChart").getContext('2d');
                 var config = {
                 type: 'line',

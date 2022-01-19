@@ -1,29 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
+    {{ state_data|json_script:"state_data" }}
     <h1>Map</h1>
     <a href="/chart/">View chart</a>
     <br><br>
-    <div id="map"></div>
+    <svg id="canvas" style="width: 1900px; height: 750px; stroke: white; stroke-width: 2px;"></svg>
 {% endblock %}
 
 <script>
     {% block scripts %}
-        // D3 Projection
-        var projection = d3.geoAlbersUsa()
-        .translate([width / 2, height / 2]) // translate to center of screen
-        .scale([1000]); // scale things down so see entire US
-
-        // Define path generator
-        var path = d3.geoPath() // path generator that will convert GeoJSON to SVG paths
-        .projection(projection); // tell path generator to use albersUsa projection
-
-        //Create SVG element and append map to the SVG
-        var svg = d3.select("body")
-        .append("svg")
-        .attr("width", 1000)
-        .attr("height", 600);
-
-
+        var state_data = JSON.parse($("#state_data").text())
+        console.log(state_data);
+        d3.json('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json').then(
+            (data, error) => {
+                var projection = d3.geoIdentity().reflectY(true).fitSize([1600, 700],data)
+                let canvas = d3.select("#canvas")
+                canvas.selectAll('path')
+                .data(data.features)
+                .enter()
+                .append('path')
+                .attr('d', d3.geoPath(projection))
+                .attr('fill', (state)=>{
+                    state_name = state.properties.name.toLowerCase();
+                    console.log(state_name)
+                    if (state_data[state_name]){
+                        let percentage = state_data[state_name];
+                        if (percentage <= 0.005)
+                            return "#ffdab3"
+                        else if (percentage <= 0.008)
+                            return "#ffb566"
+                        else if (percentage <= 0.011)
+                            return "#ff8533"
+                        else if (percentage <= 0.014)
+                            return "#cc2900"
+                        else
+                            return "#661400"
+                    }
+                })
+            }
+        )       
+        
     {% endblock %}
 </script>
