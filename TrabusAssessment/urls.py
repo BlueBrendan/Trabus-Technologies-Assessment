@@ -22,5 +22,6 @@ urlpatterns = [
     path('', include('chart.urls', namespace='chart')),
     path('chart/', include('chart.urls', namespace='chart')),
     path('map/', include('map.urls', namespace='map')),
+    path('state/', include('state.urls', namespace='state')),
     path('load_csv', views.load_csv)
 ]

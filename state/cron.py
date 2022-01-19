@@ -5,6 +5,7 @@ from state.models import State, Statistic
 def daily_stat_update():
     today = datetime.date.today()
     today = today.strftime("%Y-%m-%d")
+    today = "2022-01-17"
     print(today)
     # Read data from GitHub csv file and store in dataframe
     data = pd.read_csv('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')

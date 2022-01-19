@@ -1,8 +1,37 @@
-<h1>Chart</h1>
-<select>
-    {% for state in states %}
-        <option value="{{state.title}}">
-            {{state.title}}
-        </option>
-    {% endfor %}
-</select>
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Chart</h1>
+    <select id="stateSelection" onChange="changeState()" autocomplete="off">
+        <option selected disabled>Select</option
+        {% for state in states %}
+            <option value="{{state.title}}">
+                {{state.title}}
+            </option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+<script>
+    {% block scripts %}
+    function changeState(){
+        let state = document.getElementById("stateSelection").value;
+        console.log(state);
+
+        $.ajax({
+            url : "/state/load-state-data/" + state,
+            type : "GET",
+    
+            // handle a successful response
+            success : function(json) {
+              console.log(json);
+            },
+    
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+          });
+    }
+    {% endblock %}
+</script>
