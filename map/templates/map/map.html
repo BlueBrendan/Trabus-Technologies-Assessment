@@ -5,25 +5,50 @@
     <h1>Map</h1>
     <a href="/chart/">View chart</a>
     <br><br>
-    <svg id="canvas" style="width: 1900px; height: 750px; stroke: white; stroke-width: 2px;"></svg>
+    <div id='tooltip' style="position: absolute; background: white;">
+    </div>
+    <svg id="canvas" style="width: 1500px; height: 600px; stroke: white; stroke-width: 2px;"></svg>
+    <svg id='legend'>
+        <g>
+            <rect x="10" y="0" width="40" height="40" fill="#ffdab3"></rect>
+            <text x="60" y="20" fill="black">&lt;=0.005%</text>
+        </g>
+        <g>
+            <rect x="10" y="30" width="40" height="40" fill="#ffb566"></rect>
+            <text x="60" y="50" fill="black">&lt;=0.008%</text>
+        </g>
+        <g>
+            <rect x="10" y="60" width="40" height="40" fill="#ff8533"></rect>
+            <text x="60" y="80" fill="black">&lt;=0.011%</text>
+        </g>
+        <g>
+            <rect x="10" y="90" width="40" height="40" fill="#cc2900"></rect>
+            <text x="60" y="110" fill="black">&lt;=0.014%</text>
+        </g>
+        <g>
+            <rect x="10" y="120" width="40" height="40" fill="#661400"></rect>
+            <text x="60" y="140" fill="black">&gt;0.014%</text>
+        </g>
+    </svg>
 {% endblock %}
 
 <script>
     {% block scripts %}
         var state_data = JSON.parse($("#state_data").text())
-        console.log(state_data);
+        var canvas = d3.select("#canvas")
+        var tooltip = d3.select("#tooltip")
+
         d3.json('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json').then(
             (data, error) => {
-                var projection = d3.geoIdentity().reflectY(true).fitSize([1600, 700],data)
-                let canvas = d3.select("#canvas")
+                var projection = d3.geoIdentity().reflectY(true).fitSize([1300, 700],data)
                 canvas.selectAll('path')
                 .data(data.features)
                 .enter()
                 .append('path')
                 .attr('d', d3.geoPath(projection))
+                .attr('class', 'state')
                 .attr('fill', (state)=>{
                     state_name = state.properties.name.toLowerCase();
-                    console.log(state_name)
                     if (state_data[state_name]){
                         let percentage = state_data[state_name];
                         if (percentage <= 0.005)
@@ -38,8 +63,18 @@
                             return "#661400"
                     }
                 })
+
+                // Add state name and death rate to tooltip
+                .on('mouseover', (test)=> {
+                    tooltip.style('opacity', 1);
+                    tooltip
+                    .html(function(){
+                        return test.originalTarget.__data__.properties.name + "<br>" + state_data[test.originalTarget.__data__.properties.name.toLowerCase()] + "%"
+                    })
+                    .style('left', event.pageX + 'px')
+                    .style('top', event.pageY + 'px');
+                })
             }
-        )       
-        
+        )
     {% endblock %}
 </script>
