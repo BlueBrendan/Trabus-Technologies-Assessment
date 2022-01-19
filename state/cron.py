@@ -17,9 +17,17 @@ def daily_stat_update():
     # Remove all rows from data that are not from today
     data = [row for row in data if row not in remove]
     print(data)
-    print(len(data))
+    
+    # Create statistic object for each row in data (data from today)
+    for row in data:
+        date = datetime.datetime(int(row[0][:4]), int(row[0][5:7]), int(row[0][8:10]))
+        state = State.objects.get(state=row[1].title())
+        try:
+            stat = Statistic.objects.get(date=date, state=state)
+        except Statistic.DoesNotExist:
+            Statistic.objects.create(date=date, state=state, cases=row[3], deaths=row[4])
 
-    # Calculate death rate for each state and save in the database
+    # Recalculate the death rate for each state and save in the database
     states = State.objects.all()
     for state in states:
         try:
@@ -29,11 +37,3 @@ def daily_stat_update():
             state.save()
         except:
             pass
-    # # Create statistic object for each row in data (data from today)
-    # for row in data:
-    #     date = datetime.datetime(int(row[0][:4]), int(row[0][5:7]), int(row[0][8:10]))
-    #     state = State.objects.get(state=row[1].title())
-    #     try:
-    #         stat = Statistic.objects.get(date=date, state=state)
-    #     except Statistic.DoesNotExist:
-    #         Statistic.objects.create(date=date, state=state, cases=row[3], deaths=row[4])

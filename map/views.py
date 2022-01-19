@@ -8,7 +8,6 @@ def map_view(request):
     data = {}
     for state in states:
         data[state.title.lower()] = state.death_rate
-    print(data)
     context = {
         'state_data': data,
     }

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/5 * * * *', 'state.cron.daily_stat_update', '>>' + os.path.join(settings.BASE_DIR, "log.txt"))
+    ('0 23 * * *', 'state.cron.daily_stat_update', '>>' + os.path.join(settings.BASE_DIR, "log.txt"))
 ]
 
 MIDDLEWARE = [
