@@ -2,32 +2,33 @@
 
 {% block content %}
     {{ state_data|json_script:"state_data" }}
+    {{ percentiles|json_script:"percentiles" }}
     <h1>Map</h1>
     <button onclick="location.href='/chart/'" type="button">View chart</button>
     <br><br>
-    <div id='tooltip' style="position: absolute; background: white;">
+    <div id='tooltip' style="position: absolute; background: white; padding: 3px; border-radius: 5px; box-shadow: 3px 3px 10px 5px rgba(0, 0, 0, 0.15)">
     </div>
     <svg id="canvas" style="width: 1500px; height: 600px; stroke: white; stroke-width: 2px;"></svg>
     <svg id='legend'>
         <g>
-            <rect x="10" y="0" width="40" height="40" fill="#ffdab3"></rect>
-            <text x="60" y="20" fill="black">&lt;=0.005%</text>
+            <rect x="10" y="0" width="40" height="40" fill="#ffe7c9"></rect>
+            <text x="60" y="20">&lt;={{percentiles.0}}</text>
         </g>
         <g>
-            <rect x="10" y="30" width="40" height="40" fill="#ffb566"></rect>
-            <text x="60" y="50" fill="black">&lt;=0.008%</text>
+            <rect x="10" y="30" width="40" height="40" fill="#ffbc6b"></rect>
+            <text x="60" y="50">&lt;={{percentiles.1}}</text>
         </g>
         <g>
             <rect x="10" y="60" width="40" height="40" fill="#ff8533"></rect>
-            <text x="60" y="80" fill="black">&lt;=0.011%</text>
+            <text x="60" y="80">&lt;={{percentiles.2}}</text>
         </g>
         <g>
             <rect x="10" y="90" width="40" height="40" fill="#cc2900"></rect>
-            <text x="60" y="110" fill="black">&lt;=0.014%</text>
+            <text x="60" y="110">&lt;={{percentiles.3}}</text>
         </g>
         <g>
             <rect x="10" y="120" width="40" height="40" fill="#661400"></rect>
-            <text x="60" y="140" fill="black">&gt;0.014%</text>
+            <text x="60" y="140">&gt;{{percentiles.3}}</text>
         </g>
     </svg>
 {% endblock %}
@@ -35,12 +36,13 @@
 <script>
     {% block scripts %}
         var state_data = JSON.parse($("#state_data").text())
+        var percentiles = JSON.parse($("#percentiles").text())
         var canvas = d3.select("#canvas")
         var tooltip = d3.select("#tooltip")
 
         d3.json('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json').then(
             (data, error) => {
-                var projection = d3.geoIdentity().reflectY(true).fitSize([1300, 700],data)
+                var projection = d3.geoIdentity().reflectY(true).fitSize([1400, 570],data)
                 canvas.selectAll('path')
                 .data(data.features)
                 .enter()
@@ -51,13 +53,13 @@
                     state_name = state.properties.name.toLowerCase();
                     if (state_data[state_name]){
                         let percentage = state_data[state_name];
-                        if (percentage <= 0.005)
-                            return "#ffdab3"
-                        else if (percentage <= 0.008)
-                            return "#ffb566"
-                        else if (percentage <= 0.011)
+                        if (percentage <= percentiles[0])
+                            return "#ffe7c9"
+                        else if (percentage <= percentiles[1])
+                            return "#ffbc6b"
+                        else if (percentage <= percentiles[2])
                             return "#ff8533"
-                        else if (percentage <= 0.014)
+                        else if (percentage <= percentiles[3])
                             return "#cc2900"
                         else
                             return "#661400"
@@ -65,14 +67,17 @@
                 })
 
                 // Add state name and death rate to tooltip
-                .on('mouseover', (test)=> {
+                .on('mousemove', (test)=> {
                     tooltip.style('opacity', 1);
                     tooltip
                     .html(function(){
                         return test.originalTarget.__data__.properties.name + "<br>" + state_data[test.originalTarget.__data__.properties.name.toLowerCase()] + "%"
                     })
-                    .style('left', event.pageX + 'px')
-                    .style('top', event.pageY + 'px')
+                    .style('left', event.pageX + 25 + 'px')
+                    .style('top', event.pageY - 25 + 'px')
+                })
+                .on('mouseout', function(){
+                    tooltip.style('opacity', 0);
                 })
             }
         )
