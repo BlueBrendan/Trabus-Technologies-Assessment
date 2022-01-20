@@ -16,9 +16,9 @@ The interactive plot uses a dropdown list of states to display new cases. When a
 The interactive plot can be reached with the URL "/" or "/chart". There is a button at the top that directs the user to the interactive map.
 
 # Interactive Map
-The interactive map uses D3 to display the death rate of all states. Each state and its total death rate is plotted on a map with D3 using GeoJSON coordinates. There are 5 colors on the legend/map that correspond with how high the death rate is for each state. Hovering over each state will reveal a tooltip with the name of the state and its death rate.
+The interactive map uses D3 to display the death rate of all states. Each state and its total death rate is plotted on a map with D3 using GeoJSON coordinates. There are 5 colors on the legend/map that correspond with how high the death rate is for each state. Hovering over each state will reveal a tooltip with the name of the state and its death rate rounded to 3 decimal places.
 
 ### Legend
-x <= 0.005 : light yellow; 0.005 < x <= 0.008 : yellow; 0.08 < x <= 0.011 : orange; 0.011 < x <= 0.014 : red; x > 0.014 : dark red
+x <= 20th percentile : light yellow; 20th percentile < x <= 40th percentile : yellow; 40th percentile < x <= 60th percentile : orange; 60th percentile < x <= 80th percentile : red; x > 80th percentile : dark red
 
 The interactive map can be reached with the URL "/map". There is a button at the top that directs the user to the interactive chart.
