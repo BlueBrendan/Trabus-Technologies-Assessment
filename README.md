@@ -22,3 +22,6 @@ The interactive map uses D3 to display the death rate of all states. Each state 
 x <= 20th percentile : light yellow; 20th percentile < x <= 40th percentile : yellow; 40th percentile < x <= 60th percentile : orange; 60th percentile < x <= 80th percentile : red; x > 80th percentile : dark red
 
 The interactive map can be reached with the URL "/map". There is a button at the top that directs the user to the interactive chart.
+
+### Instructions
+Install all libraries/packages in requirements.txt and run python manage.py runserver. The interactive chart should load upon opening localhost. 
