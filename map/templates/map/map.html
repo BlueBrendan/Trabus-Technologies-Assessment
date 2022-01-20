@@ -6,29 +6,29 @@
     <h1>Map</h1>
     <button onclick="location.href='/chart/'" type="button">View chart</button>
     <br><br>
-    <div id='tooltip' style="position: absolute; background: white; padding: 3px; border-radius: 5px; box-shadow: 3px 3px 10px 5px rgba(0, 0, 0, 0.15)">
+    <div id='tooltip' style="position: absolute; background: white; padding: 4px; border-radius: 5px; opacity: 0; box-shadow: 3px 3px 10px 5px rgba(0, 0, 0, 0.15)">
     </div>
-    <svg id="canvas" style="width: 1500px; height: 600px; stroke: white; stroke-width: 2px;"></svg>
+    <svg id="canvas" style="width: 1500px; height: 600px; stroke: black;"></svg>
     <svg id='legend'>
         <g>
             <rect x="10" y="0" width="40" height="40" fill="#ffe7c9"></rect>
-            <text x="60" y="20">&lt;={{percentiles.0}}</text>
+            <text x="60" y="20">&lt;={{percentiles.0}}%</text>
         </g>
         <g>
             <rect x="10" y="30" width="40" height="40" fill="#ffbc6b"></rect>
-            <text x="60" y="50">&lt;={{percentiles.1}}</text>
+            <text x="60" y="50">&lt;={{percentiles.1}}%</text>
         </g>
         <g>
             <rect x="10" y="60" width="40" height="40" fill="#ff8533"></rect>
-            <text x="60" y="80">&lt;={{percentiles.2}}</text>
+            <text x="60" y="80">&lt;={{percentiles.2}}%</text>
         </g>
         <g>
             <rect x="10" y="90" width="40" height="40" fill="#cc2900"></rect>
-            <text x="60" y="110">&lt;={{percentiles.3}}</text>
+            <text x="60" y="110">&lt;={{percentiles.3}}%</text>
         </g>
         <g>
             <rect x="10" y="120" width="40" height="40" fill="#661400"></rect>
-            <text x="60" y="140">&gt;{{percentiles.3}}</text>
+            <text x="60" y="140">&gt;{{percentiles.3}}%</text>
         </g>
     </svg>
 {% endblock %}
@@ -73,8 +73,8 @@
                     .html(function(){
                         return test.originalTarget.__data__.properties.name + "<br>" + state_data[test.originalTarget.__data__.properties.name.toLowerCase()] + "%"
                     })
-                    .style('left', event.pageX + 25 + 'px')
-                    .style('top', event.pageY - 25 + 'px')
+                    .style('left', event.pageX + 30 + 'px')
+                    .style('top', event.pageY - 50 + 'px')
                 })
                 .on('mouseout', function(){
                     tooltip.style('opacity', 0);

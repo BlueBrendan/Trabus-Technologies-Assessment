@@ -19,7 +19,7 @@ def daily_stat_update():
     # Create statistic object for each row in data (data from today)
     for row in data:
         date = datetime.datetime(int(row[0][:4]), int(row[0][5:7]), int(row[0][8:10]))
-        state = State.objects.get(state=row[1].title())
+        state = State.objects.get(title=row[1].title())
         try:
             stat = Statistic.objects.get(date=date, state=state)
         except Statistic.DoesNotExist:
